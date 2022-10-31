@@ -45,8 +45,7 @@ class CarritoService extends GeneralDao {
     async saveProductToCart(id, idProd) {
         try {
             const cart = await CarritosModel.findById(id)
-            console.log(cart.products);
-            cart.products.push(idProd);
+            cart.products.push(idProd)
             cart.save();
             return true;
         } catch (error) {

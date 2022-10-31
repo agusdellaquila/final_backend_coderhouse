@@ -4,6 +4,7 @@ const cart = require('../controllers/cart.controller')
 
 router.get('/', cart.getCartsController)
 router.post('/order', cart.postOrderCartsController)
+router.get('/purchase', cart.getPurchaseCartsController)
 router.post('/', cart.postCartsController)
 router.delete('/deleteAll', cart.deleteCartsController)
 router.delete('/:id', cart.deleteByIdCartsController)

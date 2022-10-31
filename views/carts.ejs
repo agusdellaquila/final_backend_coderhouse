@@ -26,7 +26,7 @@
                             <a href="/products"
                                 class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Productos</a>
 
-                            <a href="/carts"
+                            <a href="/cart"
                                 class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Carrito</a>                           
                             
                                                         
@@ -45,7 +45,6 @@
         <% } else { %>
             <div class="dFlexCol">
                 <% userCart.map(prod => { %>
-                    <%= console.log(prod) %>
                     <div class="mt20 mb20">
                         <div>
                             <img src=<%=prod.image%> class="w-40">

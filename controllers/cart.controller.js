@@ -25,7 +25,6 @@ const postCartsController = async (req, res) => {
         if (productToAdd.length > 0) {
             if (productToAdd[0].stock > 0) {
                 const editedProduct = {...productToAdd[0], _doc: {...productToAdd[0]._doc, stock: productToAdd[0].stock - 1}}
-                console.log('editedProduct', editedProduct)
                 await DAO.product.editById(editedProduct, addID)
                 res.send(await DAO.cart.insertProductInCart(productToAdd, req.session.cartId))
             }
@@ -36,11 +35,32 @@ const postCartsController = async (req, res) => {
         res.render('error.ejs', {error})
     }
 }
+
+const getPurchaseCartsController = async (req, res) => {
+    try {
+        if (!req.session.username) {
+            res.render('login.ejs', {})
+        } else {
+            res.render('purchase.ejs')
+        }
+    } catch (error) {
+        res.render('error.ejs', {error})
+    }
+}
 //delete all products from cart
 const deleteCartsController = async (req, res) => {
     try {
-        await DAO.cart.deleteAllProductsInCart(req.session.cartId)
-        res.send('Cart is now empty')
+        const cartId = req.session.cartId
+
+        const cartToReturn = await DAO.cart.getByID(cartId)
+        await cartToReturn[0].products.map(async (prod) => {
+            const productToEdit = await DAO.product.getByID(prod._id)
+            const editedProduct = {...productToEdit[0], _doc: {...productToEdit[0]._doc, stock: productToEdit[0].stock + 1}}
+            await DAO.product.editById(editedProduct, prod._id)
+        })
+
+        await DAO.cart.deleteAllProductsInCart(cartId)
+        res.send('Cart deleted')    
     } catch (error) {
         res.render('error.ejs', {error})
     }
@@ -50,6 +70,11 @@ const deleteByIdCartsController = async (req, res) => {
     try {
         const prodId = req.params.id
         await DAO.cart.deleteProductInCart(req.session.cartId, prodId)
+
+        const productToEdit = await DAO.product.getByID(prodId)
+        const editedProduct = {...productToEdit[0], _doc: {...productToEdit[0]._doc, stock: productToEdit[0].stock + 1}}
+        await DAO.product.editById(editedProduct, prodId)
+
         res.send(`Product with ID #${prodId} deleted from cart.`)
     } catch (error) {
         res.render('error.ejs', {error})
@@ -88,12 +113,12 @@ const postOrderCartsController = async (req, res) => {
             })
             .then(res => console.log(res))
             .catch(err => console.log(err))
-            DAO.cart.deleteAllProductsInCart('*')
-            res.send('Order sent!')
+            DAO.cart.deleteAllProductsInCart(req.session.cartId)
+            res.send('Order sent')
         })
     } catch (error) {
         res.render('error.ejs', {error})
     }
 }
 
-module.exports = {getCartsController, postCartsController, deleteCartsController, deleteByIdCartsController, postOrderCartsController}
+module.exports = {getCartsController, postCartsController, deleteCartsController, deleteByIdCartsController, postOrderCartsController, getPurchaseCartsController}

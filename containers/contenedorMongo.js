@@ -42,7 +42,7 @@ class ContenedorMongo {
         try {
             return await this.model.find({_id: id})
         } catch (err) {
-            console.log('No existe éste producto.')
+            console.log('No existe éste producto. ', err)
         }
     }
 
@@ -107,6 +107,10 @@ class ContenedorMongo {
 
     async getMessages() {
         return await this.model.find({})
+    }
+
+    async deleteAllProductsInCartLog() {
+        await this.model.remove({})
     }
 }
 

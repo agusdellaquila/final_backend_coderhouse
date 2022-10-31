@@ -8,12 +8,7 @@ const email_pass = process.env.EMAIL_PASS
 
 const getUserLogin = async (req, res) => {
     try {
-        let sessionUsername = req.session.userObject
-        if (!req.session.username) {
-            res.render('login.ejs', {})
-        } else {
-            res.render('home.ejs', {sessionUsername})
-        }
+        res.render('login.ejs', {})
     } catch (error) {
         res.render('error.ejs', {error})
     }
@@ -33,9 +28,10 @@ const postUserLogin = async (req, res) => {
                         req.session.userObject = foundItem
                         req.session.username = foundItem.username
                         sessionUsername = foundItem.username
+                        await DAO.cart.deleteAllProductsInCartLog()
                         const { id } = await DAO.cart.cartSave()
                         req.session.cartId = id
-                        res.render('home.ejs', {sessionUsername})
+                        res.redirect('/home')
                     } else {
                         res.render('error-login.ejs', {error: 'Incorrect password'})
                     }
@@ -44,6 +40,15 @@ const postUserLogin = async (req, res) => {
                 }
             }
         })
+    } catch (error) {
+        res.render('error.ejs', {error})
+    }
+}
+
+const getHome = async (req, res) => {
+    try {
+        let sessionUserObj = req.session.userObject
+        res.render('home.ejs', {sessionUserObj})
     } catch (error) {
         res.render('error.ejs', {error})
     }
@@ -150,4 +155,4 @@ const postRegister = async (req, res) => {
     }
 }
 
-module.exports = {getUserLogin, postUserLogin, getUserLogout, getUserProfilePage, getRegister, postRegister}
+module.exports = {getUserLogin, postUserLogin, getHome, getUserLogout, getUserProfilePage, getRegister, postRegister}

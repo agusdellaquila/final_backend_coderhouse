@@ -161,10 +161,10 @@ io.on('connection', function(socket) {
     socket.on('newMessage', async (msg) => {
         await messages.writeMessage(msg)
         const normalizedData = normalize(messages.data, [messageSchema])
-        const messagesMongo = messages.read()
-        await DAO.messages.messagesSave(messagesMongo)
         io.sockets.emit('messages', normalizedData)
     })
+    const messagesMongo = messages.read()
+    DAO.messages.messagesSave(messagesMongo)
 })
 
 //---------------------------------

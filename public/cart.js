@@ -33,6 +33,6 @@ const send = (order) => {
         body: order
     })
     .then(() => {
-        window.location.href = '/products'
+        window.location.href = '/cart/purchase'
     })
 }
