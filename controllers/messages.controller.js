@@ -9,7 +9,6 @@ const getAllMessages = async (req, res) => {
             const email = req.session.userObject.email
             DAO.messages.getByEmail(email)
             .then((messages) => {
-                console.log('messages', messages)
                 res.render('messages.ejs', {messages, email})
             })
             .catch((error) => {
