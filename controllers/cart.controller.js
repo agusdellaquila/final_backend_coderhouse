@@ -2,7 +2,7 @@ const FactoryDAO = require('../daos/index')
 const DAO = FactoryDAO()
 const nodemailer = require('nodemailer')
 const email_notification = process.env.EMAIL_NOTIFICATION
-const email_pass = process.env.EMAILPASS
+const email_pass = process.env.EMAIL_PASS
 
 const getCartsController = async (req, res) => {
     try {
